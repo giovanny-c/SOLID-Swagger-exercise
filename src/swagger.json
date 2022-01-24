@@ -30,8 +30,8 @@
                                     }
                                 },
                                 "example": {
-                                    "name": "Usuario 1",
-                                    "email": "usuario1@gmail.com"
+                                    "name": "username",
+                                    "email": "user@example.com"
                                 }
                             }
                         }
@@ -48,24 +48,29 @@
                                         "type": "object",
                                         "properties": {
                                             "id": {
-                                                "type": "string"
+                                                "type": "string",
+                                                "format": "uuid"
                                             },
                                             "admin": {
                                                 "type": "boolean",
                                                 "default": "false"
                                             },
                                             "name": {
-                                                "type": "string"
+                                                "type": "string",
+                                                "format": "string",
+                                                "example": "username"
                                             },
                                             "email": {
-                                                "type": "string"
+                                                "type": "string",
+                                                "format": "email"
                                             },
                                             "created_at": {
-                                                "type": "",
-                                                "value": ""
+                                                "type": "string",
+                                                "format": "date-time"
                                             },
                                             "updated_at": {
-                                                "type": ""
+                                                "type": "string",
+                                                "format": "date-time"
                                             }
                                         }
                                     }
@@ -74,9 +79,44 @@
                         }
                     },
                     "400": {
-                        "description": "This emais is already taken"
+                        "description": "Email already exists",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "error": {
+                                                "type": "string",
+                                                "example": "This email is already taken"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
+            },
+            "get": {
+                "tags": [
+                    "User"
+                ],
+                "sumary": "List users",
+                "description": "Lista all user ",
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "user_id",
+                        "required": "true",
+                        "description": "user id",
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ]
             }
         }
     }
