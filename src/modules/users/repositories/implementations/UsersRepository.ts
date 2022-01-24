@@ -26,7 +26,7 @@ class UsersRepository implements IUsersRepository {
       name,
       email,
       created_at: new Date(),
-      updated_at: ""
+      updated_at: new Date(),
     })
 
     this.users.push(user)
