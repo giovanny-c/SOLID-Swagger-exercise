@@ -12,26 +12,27 @@
         "/users": {
             "post": {
                 "tags": [
-                    "User"
+                    "Users"
                 ],
                 "sumary": "Create a user",
                 "description": "Create a new user",
                 "requestBody": {
                     "content": {
-                        "aplication/json": {
+                        "application/json": {
                             "schema": {
                                 "type": "object",
-                                "porperties": {
+                                "properties": {
                                     "name": {
                                         "type": "string"
                                     },
                                     "email": {
-                                        "type": "string"
+                                        "type": "string",
+                                        "format": "email"
                                     }
                                 },
                                 "example": {
                                     "name": "username",
-                                    "email": "user@example.com"
+                                    "email": "user@email.com"
                                 }
                             }
                         }
@@ -101,10 +102,10 @@
             },
             "get": {
                 "tags": [
-                    "User"
+                    "Users"
                 ],
                 "sumary": "List users",
-                "description": "Lista all user ",
+                "description": "Lista all user, only admin user can access ",
                 "parameters": [
                     {
                         "in": "header",
@@ -116,7 +117,269 @@
                             "format": "uuid"
                         }
                     }
-                ]
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "aplication/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "oneOf": [
+                                            {
+                                                "type": "object",
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "string",
+                                                        "format": "uuid",
+                                                        "example": "4gb85f64-5717-4562-b3fc-2c963f66afa6"
+                                                    },
+                                                    "admin": {
+                                                        "type": "boolean",
+                                                        "default": "false",
+                                                        "example": "true"
+                                                    },
+                                                    "name": {
+                                                        "type": "string",
+                                                        "format": "string",
+                                                        "example": "username02"
+                                                    },
+                                                    "email": {
+                                                        "type": "string",
+                                                        "format": "email",
+                                                        "example": "user02@example.com"
+                                                    },
+                                                    "created_at": {
+                                                        "type": "string",
+                                                        "format": "date-time"
+                                                    },
+                                                    "updated_at": {
+                                                        "type": "string",
+                                                        "format": "date-time"
+                                                    }
+                                                }
+                                            },
+                                            {
+                                                "type": "object",
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "string",
+                                                        "format": "uuid"
+                                                    },
+                                                    "admin": {
+                                                        "type": "boolean",
+                                                        "default": "false"
+                                                    },
+                                                    "name": {
+                                                        "type": "string",
+                                                        "format": "string",
+                                                        "example": "username"
+                                                    },
+                                                    "email": {
+                                                        "type": "string",
+                                                        "format": "email"
+                                                    },
+                                                    "created_at": {
+                                                        "type": "string",
+                                                        "format": "date-time"
+                                                    },
+                                                    "updated_at": {
+                                                        "type": "string",
+                                                        "format": "date-time"
+                                                    }
+                                                }
+                                            }
+                                        ]
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "descriprion": "User not allowed to do this operation or did not find a user",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "error": {
+                                                "type": "string",
+                                                "example": "You need to be an admin to list all users"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/users/{user_id}": {
+            "get": {
+                "tags": [
+                    "Users"
+                ],
+                "sumary": "Return a specific user",
+                "description": "Return a specific user, whit the id given by the route params",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "user_id",
+                        "required": "true",
+                        "description": "user id",
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "aplication/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "id": {
+                                                "type": "string",
+                                                "format": "uuid"
+                                            },
+                                            "admin": {
+                                                "type": "boolean",
+                                                "default": "false"
+                                            },
+                                            "name": {
+                                                "type": "string",
+                                                "format": "string",
+                                                "example": "username"
+                                            },
+                                            "email": {
+                                                "type": "string",
+                                                "format": "email"
+                                            },
+                                            "created_at": {
+                                                "type": "string",
+                                                "format": "date-time"
+                                            },
+                                            "updated_at": {
+                                                "type": "string",
+                                                "format": "date-time"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "descriprion": "Did not find a user",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "error": {
+                                                "type": "string",
+                                                "example": "User not found"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/users/{user_id}/admin": {
+            "patch": {
+                "tags": [
+                    "Users"
+                ],
+                "sumary": "Turn a user in admin",
+                "description": "Turn a user in admin, whit the id given by the route params",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "user_id",
+                        "required": "true",
+                        "description": "user id",
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "aplication/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "id": {
+                                                "type": "string",
+                                                "format": "uuid"
+                                            },
+                                            "admin": {
+                                                "type": "boolean",
+                                                "default": "true"
+                                            },
+                                            "name": {
+                                                "type": "string",
+                                                "format": "string",
+                                                "example": "username"
+                                            },
+                                            "email": {
+                                                "type": "string",
+                                                "format": "email"
+                                            },
+                                            "created_at": {
+                                                "type": "string",
+                                                "format": "date-time"
+                                            },
+                                            "updated_at": {
+                                                "type": "string",
+                                                "format": "date-time"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "descriprion": "Did not find a user",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "error": {
+                                                "type": "string",
+                                                "example": "User not found"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
     }
